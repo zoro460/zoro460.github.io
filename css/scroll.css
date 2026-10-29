@@ -1,0 +1,160 @@
+/* Scroll-driven motion: the page "tests itself" as you scroll.
+   Motion rules are gated by classes js/scroll.js sets on <html>:
+   .sx-ready (enhanced DOM), .sx-motion (motion allowed), .sx-full (desktop), .sx-lite (mobile), .sx-static (reduced motion).
+   Without JS the page renders as before. Only transform, opacity and clip-path are animated. */
+
+/* ---------- Hero: typed command line (pure CSS, ends fully visible) ---------- */
+.hero-cmd { display: inline-flex; align-items: center; margin-bottom: 20px; font-size: 14px; color: var(--text-2); }
+.hero-cmd-text { display: inline-block; white-space: pre; }
+.hero-cmd-caret { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-cmd-text { animation: sx-type 1.2s steps(20, end) .45s both; }
+  .hero-cmd-caret {
+    display: inline-block; width: 8px; height: 16px; margin-left: 6px; background: var(--cyan);
+    animation: sx-caret-move 1.2s steps(20, end) .45s both, sx-blink 1.1s steps(1, end) 1.8s infinite;
+  }
+}
+@keyframes sx-type { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes sx-caret-move { from { transform: translateX(calc(-20ch - 6px)); } to { transform: none; } }
+@keyframes sx-blink { 50% { opacity: 0; } }
+
+/* ---------- Global test-run progress bar ---------- */
+.sx-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60; background: rgba(255,255,255,.05); pointer-events: none; }
+.sx-static .sx-progress { display: none; }
+.sx-progress-fill { position: absolute; inset: 0; background: var(--grad-primary); transform-origin: 0 50%; transform: scaleX(0); will-change: transform; }
+.sx-progress-seg { position: absolute; top: 0; bottom: 0; }
+.sx-progress-seg + .sx-progress-seg { border-left: 2px solid var(--bg); }
+.sx-progress-seg i { position: absolute; inset: 0; background: var(--pass); opacity: 0; transition: opacity .4s ease-out; }
+.sx-progress-seg.pass i { opacity: 1; }
+
+/* ---------- Pinned sections (desktop only) ---------- */
+.sx-pinned > .sx-pin { position: sticky; top: var(--pin-top, 96px); }
+
+/* ---------- Skills: test suite ---------- */
+.sx-runner {
+  margin: 0 0 20px; padding: 14px 18px 16px; border-radius: 16px;
+  background: rgba(15,15,24,.9); border: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: 13px;
+}
+.sx-motion #skills:not(.sx-pinned) .sx-runner {
+  position: sticky; top: var(--sx-nav, 96px); z-index: 5;
+  background: rgba(12,12,20,.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.sx-runner-row { display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; }
+.sx-runner-cmd { color: var(--text-2); }
+.sx-runner-status { display: inline-flex; align-items: center; gap: 8px; color: var(--text-3); }
+.sx-runner-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); }
+.sx-motion .sx-runner.running .sx-runner-status::before { animation: sx-breathe 1s ease-in-out infinite alternate; }
+.sx-runner.done .sx-runner-status { color: var(--pass); }
+.sx-runner.done .sx-runner-status::before { background: var(--pass); }
+.sx-runner-count { margin-left: auto; color: var(--text-3); }
+.sx-runner-track { position: relative; height: 4px; margin-top: 12px; border-radius: 4px; background: var(--surface-3); overflow: hidden; }
+.sx-runner-fill, .sx-runner-pass { position: absolute; inset: 0; transform-origin: 0 50%; }
+.sx-runner-fill { background: var(--grad-primary); transform: scaleX(0); transition: transform .35s var(--ease-out); }
+.sx-runner-pass { background: var(--pass); opacity: 0; transition: opacity .6s ease-out; }
+.sx-runner.done .sx-runner-pass { opacity: 1; }
+@keyframes sx-breathe { from { opacity: .35; } to { opacity: 1; } }
+
+/* Each skill tag is a test case: pending ring, then a check when it passes */
+.sx-check { display: inline-grid; place-items: center; width: .9em; height: .9em; margin-right: .5em; vertical-align: -.08em; }
+.sx-check > * { grid-area: 1 / 1; }
+.sx-check-ring { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid currentColor; opacity: .7; transition: transform .25s var(--ease-out), opacity .25s; }
+.sx-check-mark { color: var(--pass); font-weight: 600; line-height: 1; opacity: 0; transform: scale(0); transition: transform .4s cubic-bezier(.34,1.56,.64,1), opacity .2s; }
+.tag.sx-pass .sx-check-ring { opacity: 0; transform: scale(0); }
+.tag.sx-pass .sx-check-mark { opacity: 1; transform: none; }
+.sx-motion .tag.sx-run .sx-check-ring { animation: sx-ring .7s ease-in-out infinite alternate; }
+@keyframes sx-ring { from { transform: scale(.7); } to { transform: scale(1.15); } }
+
+.sx-motion #skills .tag { opacity: .38; transform: translateY(4px); transition: opacity .35s var(--ease-out), transform .35s var(--ease-out); }
+.sx-motion #skills .tag.sx-run { opacity: .7; transform: none; }
+.sx-motion #skills .tag.sx-pass { opacity: 1; transform: none; }
+
+.sx-ready #skills .skill-card { position: relative; }
+.sx-ready #skills .skill-card::after {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+  border: 1px solid rgba(74,222,128,.42); opacity: 0; transition: opacity .6s ease-out;
+}
+.sx-ready #skills .skill-card.sx-done::after { opacity: 1; }
+.sx-card-pass {
+  margin-left: auto; padding: 4px 10px; border-radius: 999px;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--pass); background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.28);
+  opacity: 0; transform: translateY(4px); transition: opacity .4s var(--ease-out), transform .4s var(--ease-out);
+}
+.skill-card.sx-done .sx-card-pass { opacity: 1; transform: none; }
+
+/* ---------- Projects: horizontal scroll (desktop) or native swipe row ---------- */
+.sx-hpin main { overflow-x: clip; }
+.sx-hpin .projects-grid { display: flex; gap: 20px; width: max-content; will-change: transform; }
+.sx-hpin .project-card { flex: none; width: min(540px, 56vw); }
+
+.sx-row .projects-grid {
+  display: flex; gap: 14px; overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter);
+  margin-inline: calc(var(--gutter) * -1); padding: 6px var(--gutter) 18px;
+  scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent;
+}
+.sx-row .project-card { flex: 0 0 min(86%, 440px); scroll-snap-align: start; }
+
+/* "bug found -> fixed" badge */
+.sx-bug {
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 999px;
+  background: rgba(7,7,12,.88); border: 1px solid rgba(255,255,255,.14);
+  font: 500 11px/1.4 var(--font-mono); color: var(--text-2); white-space: nowrap;
+}
+.sx-bug-found { position: relative; display: inline-flex; align-items: center; gap: 6px; transition: opacity .4s ease-out 1.1s; }
+.sx-bug-found i { width: 6px; height: 6px; border-radius: 50%; background: var(--fail); transition: opacity .4s ease-out 1.1s; }
+.sx-bug-found::after {
+  content: ""; position: absolute; left: 12px; right: 0; top: 52%; height: 1px; background: currentColor;
+  transform: scaleX(0); transform-origin: 0 50%; transition: transform .45s var(--ease-out) 1.1s;
+}
+.sx-bug-arrow { color: var(--text-3); }
+.sx-bug-fixed { color: var(--pass); }
+.sx-bug.fixed .sx-bug-found { opacity: .6; }
+.sx-bug.fixed .sx-bug-found i { opacity: .4; }
+.sx-bug.fixed .sx-bug-found::after { transform: scaleX(1); }
+.sx-motion .sx-bug { clip-path: inset(0 calc(100% - var(--found-w, 100%)) 0 0 round 999px); transition: clip-path .8s var(--ease-out) .45s; }
+.sx-motion .sx-bug.fixed { clip-path: inset(0 0 0 0 round 999px); }
+
+/* ---------- Experience: self-drawing timeline ---------- */
+.sx-ready .timeline { position: relative; --rail-x: 20px; --tl-pad: 40px; }
+.sx-ready .timeline::before, .sx-ready .timeline::after {
+  content: ""; position: absolute; left: calc(var(--rail-x) - 1px); top: var(--rail-top, 0px);
+  width: 2px; height: var(--rail-h, 0px); border-radius: 2px; pointer-events: none;
+}
+.sx-ready .timeline::before { background: var(--border); }
+.sx-ready .timeline::after { background: linear-gradient(180deg, var(--cyan), var(--violet)); transform-origin: 50% 0; transform: scaleY(var(--rail, 0)); }
+.sx-ready .timeline-item { position: relative; }
+.sx-ready .timeline-item::before {
+  content: ""; position: absolute; left: calc(var(--rail-x) - var(--tl-pad) - 6px); top: calc(var(--dot-y, 0px) - 6px);
+  width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--cyan);
+  transform: scale(0); transition: transform .45s cubic-bezier(.34,1.56,.64,1);
+}
+.sx-ready .timeline-item + .timeline-item::before { border-color: var(--violet); }
+.sx-ready .timeline-item.sx-reached::before { transform: none; }
+.sx-motion .timeline-item > * { opacity: 0; transform: translateX(-14px); transition: opacity .6s var(--ease-out), transform .7s var(--ease-out); }
+.sx-motion .timeline-item > :nth-child(2) { transition-delay: .08s; }
+.sx-motion .timeline-item > :nth-child(3) { transition-delay: .16s; }
+.sx-motion .timeline-item.sx-reached > * { opacity: 1; transform: none; }
+
+/* ---------- Contact: calm resolve ---------- */
+.contact-pass { margin-top: 36px; font-size: 13px; color: var(--text-3); }
+.contact-cta { margin-top: 8px; font-family: var(--font-display); font-size: clamp(22px, 2.4vw, 28px); font-weight: 600; letter-spacing: -.02em; line-height: 1.2; }
+.contact-card .contact-cta + .hero-ctas { margin-top: 28px; }
+.sx-motion .contact-inner > * {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 1.2s cubic-bezier(.22,1,.36,1), transform 1.6s cubic-bezier(.22,1,.36,1);
+  transition-delay: calc(var(--i, 0) * .14s);
+}
+.sx-motion .contact-inner > .sx-in { opacity: 1; transform: none; }
+.sx-motion .contact-glow { opacity: .35; transform: scale(.82); transition: opacity 2.4s ease-out, transform 2.8s cubic-bezier(.22,1,.36,1); }
+.sx-motion .contact-card.sx-calm .contact-glow { opacity: 1; transform: none; }
+
+/* ---------- Small screens ---------- */
+@media (max-width: 700px) {
+  .sx-ready .timeline { --rail-x: 11px; --tl-pad: 22px; }
+  .sx-ready .preview .window { top: 44px; } /* clear the bug badge, the window bar is hidden on phones */
+  .sx-runner { padding: 12px 14px 14px; font-size: 12px; }
+  .contact-pass { margin-top: 28px; }
+}

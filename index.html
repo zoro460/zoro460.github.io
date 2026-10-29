@@ -15,6 +15,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/scroll.css">
+  <link rel="stylesheet" href="css/fx.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -57,6 +59,7 @@
   <main id="main">
     <!-- HERO -->
     <section class="hero container" id="top">
+      <p class="hero-cmd mono"><span class="hero-cmd-text"><span class="accent">&gt;</span> run portfolio.spec</span><span class="hero-cmd-caret" aria-hidden="true"></span></p>
       <p class="pill reveal"><span class="dot" aria-hidden="true"></span>Open to full-time QA automation roles</p>
       <h1 class="hero-title reveal">
         <span class="hero-hi">Hi, I'm Soham.</span>
@@ -198,7 +201,7 @@
 
       <div class="projects-grid">
         <!-- ParaBank -->
-        <article class="card project-card project-featured reveal">
+        <article class="card project-card reveal">
           <div class="preview preview-violet" aria-hidden="true">
             <div class="window">
               <div class="window-bar">
@@ -211,27 +214,23 @@
                 <div class="test-row"><span class="ok">✓</span><span class="test-name">transfer.spec.ts › transfer funds between accounts</span><span class="t">2.4s</span></div>
                 <div class="test-row"><span class="ok">✓</span><span class="test-name">api/accounts.spec.ts › GET /accounts returns 200</span><span class="t">0.3s</span></div>
                 <div class="test-row"><span class="ok">✓</span><span class="test-name">bill-pay.spec.ts › pay bill with valid payee</span><span class="t">1.8s</span></div>
-                <div class="test-row"><span class="ok">✓</span><span class="test-name">loan.spec.ts › request loan shows approval</span><span class="t">2.1s</span></div>
-                <div class="test-row"><span class="ok">✓</span><span class="test-name">register.spec.ts › new customer can register</span><span class="t">1.6s</span></div>
               </div>
             </div>
           </div>
           <div class="project-body">
             <div class="project-title-row">
               <h3>ParaBank Test Automation</h3>
-              <span class="pill pill-sm mono">Personal · 2026</span>
+              <div class="project-meta">
+                <span class="pill pill-sm mono">Personal · 2026</span>
+                <a class="icon-link" href="https://github.com/zoro460/parabank-playwright-ai" target="_blank" rel="noopener" aria-label="ParaBank project on GitHub">
+                  <svg class="icon icon-gh" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+                </a>
+              </div>
             </div>
-            <p class="muted">A Playwright + TypeScript framework for the ParaBank demo banking app — Page Object Model, custom fixtures, UI and API tests, and CI on GitHub Actions. Built with Claude Code and Playwright CLI for AI-assisted test generation and debugging.</p>
+            <p class="muted">Playwright and TypeScript framework for a demo banking app, with Page Object Model, UI and API tests, CI on GitHub Actions, and AI-assisted test generation using Claude Code.</p>
             <ul class="tags" aria-label="Tech used">
               <li class="tag">Playwright</li><li class="tag">TypeScript</li><li class="tag">Claude Code</li><li class="tag">Playwright CLI</li><li class="tag">GitHub Actions</li>
             </ul>
-            <div class="project-links">
-              <a class="link-cta" href="https://github.com/zoro460/parabank-playwright-ai" target="_blank" rel="noopener">
-                View on GitHub
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
-              </a>
-              <span class="mono muted-3 repo-path">github.com/zoro460/parabank-playwright-ai</span>
-            </div>
           </div>
         </article>
 
@@ -248,8 +247,10 @@
           </div>
           <div class="project-body">
             <div class="project-title-row">
-              <h3>FAB Bank — Digital Banking</h3>
-              <span class="mono muted-3 small">Client</span>
+              <h3>FAB Bank Digital Banking</h3>
+              <div class="project-meta">
+                <span class="pill pill-sm mono">Client · FAB Bank</span>
+              </div>
             </div>
             <p class="muted">UI and API automation for online banking, loans, e-statements and account opening, written as BDD scenarios in Gherkin.</p>
             <ul class="tags" aria-label="Tech used">
@@ -276,8 +277,10 @@
           </div>
           <div class="project-body">
             <div class="project-title-row">
-              <h3>Hyundai — Dealer Management</h3>
-              <span class="mono muted-3 small">Client</span>
+              <h3>Hyundai Dealer Management</h3>
+              <div class="project-meta">
+                <span class="pill pill-sm mono">Client · Hyundai</span>
+              </div>
             </div>
             <p class="muted">Turned manual scenarios into Selenium automation across sales, finance, workshop and inventory, with Extent HTML reports.</p>
             <ul class="tags" aria-label="Tech used">
@@ -331,6 +334,8 @@
             <span class="grad-text">software together.</span>
           </h2>
           <p class="muted contact-sub">Hiring for QA automation? I'd love to hear about your team and product.</p>
+          <p class="contact-pass mono"><span class="ok" aria-hidden="true">✓</span> portfolio.spec passed</p>
+          <p class="contact-cta">Ready to ship? Let's talk.</p>
           <div class="hero-ctas">
             <a class="btn btn-primary" href="mailto:kalesoham651@gmail.com">
               kalesoham651@gmail.com
@@ -356,5 +361,7 @@
   </footer>
 
   <script src="js/main.js" defer></script>
+  <script src="js/scroll.js" defer></script>
+  <script src="js/fx.js" defer></script>
 </body>
 </html>

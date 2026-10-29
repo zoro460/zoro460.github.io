@@ -1,0 +1,74 @@
+/* Interactive effects on top of the Dark Aurora design.
+   js/fx.js sets the classes on <html>: .fx-ready (JS on), .fx-hover (mouse with hover), .fx-still (reduced motion).
+   Only transform, opacity and CSS variables change over time. */
+
+/* ---------- 1. Cursor spotlight ---------- */
+.fx-spot {
+  position: fixed; left: 0; top: 0; z-index: -1;
+  width: 900px; height: 900px; margin: -450px 0 0 -450px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(139,92,246,.15) 0%, rgba(34,211,238,.07) 38%, rgba(34,211,238,0) 68%);
+  pointer-events: none; opacity: 0; transition: opacity .5s ease-out; will-change: transform;
+}
+.fx-spot.on { opacity: 1; }
+
+/* Card edge light: a 1px ring masked out of a radial gradient that sits at the cursor */
+.fx-edge { position: relative; }
+.fx-hover .fx-edge::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: radial-gradient(260px circle at var(--mx, -999px) var(--my, -999px), rgba(196,181,253,.8), rgba(103,232,249,.4) 45%, rgba(103,232,249,0) 72%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: var(--fx-o, 0);
+}
+
+/* ---------- 3. Card tilt: JS sets the individual `rotate` property, so the existing
+   hover translateY and the horizontal track transform keep working untouched. ---------- */
+.fx-hover .skills-grid, .fx-hover .projects-grid { perspective: 1400px; }
+
+/* ---------- 2. Hero bug hunt ---------- */
+.fx-ready .hero { position: relative; }
+.fx-bugs { position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none; }
+.fx-bug {
+  position: absolute; left: 0; top: 0; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
+  display: grid; place-items: center; background: transparent; color: var(--fail); cursor: pointer;
+  pointer-events: auto; will-change: transform; -webkit-tap-highlight-color: transparent;
+}
+.fx-bug > * { grid-area: 1 / 1; }
+.fx-bug:focus-visible { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 50%; }
+.fx-bug-body { display: block; transition: transform .2s var(--ease-out); }
+.fx-bug-body svg { display: block; width: 18px; height: 18px; }
+.fx-bug:hover .fx-bug-body, .fx-bug:focus-visible .fx-bug-body { transform: scale(1.25); }
+.fx-bug-burst { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--pink); opacity: 0; }
+.fx-bug-check { color: var(--pass); font: 600 18px/1 var(--font-mono); opacity: 0; }
+.fx-bug.squashed { cursor: default; }
+.fx-bug.squashed .fx-bug-body { opacity: 0; animation: fx-squash .35s ease-in; }
+.fx-bug.squashed .fx-bug-burst { animation: fx-burst .5s ease-out; }
+.fx-bug.squashed .fx-bug-check { animation: fx-check 1.1s ease-out; }
+.fx-still .fx-bug.squashed .fx-bug-check { opacity: 1; }
+@keyframes fx-squash { 0% { transform: scale(1); opacity: 1; } 40% { transform: scale(1.5); opacity: 1; } 100% { transform: scale(0); opacity: 0; } }
+@keyframes fx-burst { 0% { transform: scale(.4); opacity: .9; } 100% { transform: scale(1.9); opacity: 0; } }
+@keyframes fx-check {
+  0% { transform: scale(.3); opacity: 0; } 25% { transform: scale(1.15); opacity: 1; }
+  45% { transform: none; opacity: 1; } 75% { opacity: 1; } 100% { transform: none; opacity: 0; }
+}
+
+.fx-counter { position: absolute; z-index: 2; margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-3); white-space: nowrap; }
+.fx-counter.fx-center { transform: translateX(-50%); }
+.fx-counter.done { color: var(--pass); }
+.fx-counter:focus { outline: none; }
+
+/* ---------- 4. Contact: moving aurora border ---------- */
+.fx-ready .contact-card { isolation: isolate; border-color: transparent; }
+.fx-ready .contact-card::before {
+  content: ""; position: absolute; z-index: -2; left: 50%; top: 50%;
+  width: var(--fx-ring, 150%); height: var(--fx-ring, 150%); pointer-events: none;
+  background: conic-gradient(from 0deg, #8B5CF6, #22D3EE, #EC4899, #8B5CF6);
+  opacity: .6; transform: translate(-50%, -50%);
+  animation: fx-orbit 8s linear infinite; animation-play-state: paused;
+}
+.fx-ready .contact-card.fx-live::before { animation-play-state: running; }
+.fx-ready .contact-card::after {
+  content: ""; position: absolute; z-index: -1; inset: 1px; pointer-events: none;
+  border-radius: calc(var(--radius-card) - 1px); background: #0C0C16;
+}
+@keyframes fx-orbit { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
