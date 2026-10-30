@@ -1,0 +1,37 @@
+/* Extras: magnetic buttons, count-up numbers and the "test" easter egg.
+   js/extras.js sets .ex-ready and .ex-still (reduced motion) on <html>.
+   Only transform and opacity change over time. */
+
+/* ---------- Magnetic buttons: JS sets the `translate` property, so the existing
+   hover/active `transform` rules keep working. ---------- */
+.ex-label { display: inline-flex; align-items: center; gap: inherit; }
+
+/* ---------- Count-up numbers ---------- */
+.ex-count { display: inline-block; font-variant-numeric: tabular-nums; }
+.ex-sr {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+/* ---------- "test" easter egg ---------- */
+.ex-toast {
+  position: fixed; right: 20px; bottom: 20px; z-index: 70; max-width: calc(100vw - 32px);
+  padding: 14px 18px; border-radius: 14px;
+  background: rgba(12,12,20,.95); border: 1px solid var(--border-strong);
+  font: 13px/1.7 var(--font-mono); color: var(--text-2);
+  pointer-events: none; opacity: 0; transform: translateY(16px);
+  transition: opacity .3s ease-out, transform .45s var(--ease-out);
+}
+.ex-toast.show { opacity: 1; transform: none; }
+.ex-toast:empty { display: none; }
+.ex-toast-line { white-space: pre; opacity: 0; transform: translateY(6px); transition: opacity .25s ease-out, transform .3s var(--ease-out); }
+.ex-toast-line.in { opacity: 1; transform: none; }
+.ex-still .ex-toast, .ex-still .ex-toast-line { transform: none; }
+
+.sx-progress::after { content: ""; position: absolute; inset: 0; background: var(--pass); opacity: 0; pointer-events: none; }
+.sx-progress.ex-flash::after { animation: ex-flash 1.2s ease-out; }
+@keyframes ex-flash { 0% { opacity: 0; } 15% { opacity: 1; } 100% { opacity: 0; } }
+
+@media (max-width: 700px) {
+  .ex-toast { right: 16px; bottom: 16px; padding: 12px 14px; font-size: 12px; }
+}
