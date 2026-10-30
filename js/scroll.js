@@ -118,6 +118,7 @@
   // Depth speeds: negative = the layer lifts away faster than the page (nearer to the viewer).
   // Upper layers move fastest so the gaps only ever widen and nothing drifts into About.
   const heroLayers = [
+    [q('.hero-cmd', hero), -0.32, 'transform', false],
     [q('.pill', hero), -0.28, 'translate', false],
     [q('.hero-hi', hero), -0.22, 'transform', true],
     [q('.hero-line', hero), -0.16, 'transform', true],

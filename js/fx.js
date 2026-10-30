@@ -46,14 +46,9 @@
   const layer = make('div', 'fx-bugs');
   layer.setAttribute('role', 'group');
   layer.setAttribute('aria-label', 'Bug hunt, optional mini game');
-  const counter = make('div', 'fx-counter mono');
-  const counterText = make('span', 'fx-count-text');
-  counterText.setAttribute('role', 'status');
-  const replay = make('button', 'fx-replay', '↻ replay');
-  replay.type = 'button';
-  replay.hidden = true;
-  replay.setAttribute('aria-label', 'Replay bug hunt');
-  counter.append(counterText, replay);
+  const counter = make('p', 'fx-counter mono');
+  counter.setAttribute('role', 'status');
+  counter.tabIndex = -1;
   hero.append(layer, counter);
 
   const bugs = Array.from({ length: BUG_COUNT }, () => {
@@ -64,7 +59,7 @@
     btn.type = 'button';
     btn.setAttribute('aria-label', 'Squash bug');
     layer.append(btn);
-    const b = { btn, dir: q('.fx-bug-dir', btn), x: -100, y: -100, a: Math.random() * Math.PI * 2, turn: 0, wait: 0, hold: false, squashed: false, hideTimer: 0 };
+    const b = { btn, dir: q('.fx-bug-dir', btn), x: -100, y: -100, a: Math.random() * Math.PI * 2, turn: 0, wait: 0, hold: false, squashed: false };
     btn.addEventListener('click', () => squash(b));
     btn.addEventListener('pointerenter', () => { b.hold = true; });
     btn.addEventListener('pointerleave', () => { b.hold = false; wake(); });
@@ -76,7 +71,7 @@
   let doneTimer = 0;
   const setCounter = () => {
     counter.classList.toggle('done', fixed === BUG_COUNT);
-    counterText.textContent = `bugs fixed: ${fixed}/${BUG_COUNT}`;
+    counter.textContent = `bugs fixed: ${fixed}/${BUG_COUNT}`;
   };
   setCounter();
 
@@ -112,7 +107,7 @@
       range.selectNodeContents(el);
       [...range.getClientRects()].forEach((r) => { if (r.width && r.height) boxes.push(toLayer(r)); });
     });
-    ['.pill', '.test-strip'].forEach((sel) => {
+    ['.hero-cmd', '.pill', '.test-strip'].forEach((sel) => {
       const el = q(sel, hero);
       if (el) boxes.push(toLayer(el.getBoundingClientRect()));
     });
@@ -175,44 +170,18 @@
     b.btn.classList.add('squashed');
     b.btn.setAttribute('aria-label', 'Bug fixed');
     b.btn.tabIndex = -1;
-    b.hideTimer = window.setTimeout(() => { b.btn.hidden = true; }, 1100);
+    window.setTimeout(() => { b.btn.hidden = true; }, 1100);
     setCounter();
     if (fixed === BUG_COUNT) {
-      counterText.textContent = '✓ all bugs fixed';
-      replay.hidden = false;
+      counter.textContent = '✓ all bugs fixed';
       window.clearTimeout(doneTimer);
       doneTimer = window.setTimeout(setCounter, 2600);
-      avoidDueAt = performance.now() + 60;
-      wake();
     }
     if (hadFocus) {
       const next = bugs.find((o) => !o.squashed);
-      (next ? next.btn : replay).focus({ preventScroll: true });
+      (next ? next.btn : counter).focus({ preventScroll: true });
     }
   }
-
-  // Bring all bugs back for another round.
-  replay.addEventListener('click', () => {
-    const hadFocus = document.activeElement === replay;
-    window.clearTimeout(doneTimer);
-    fixed = 0;
-    replay.hidden = true;
-    setCounter();
-    measureAvoid();
-    bugs.forEach((b) => {
-      window.clearTimeout(b.hideTimer);
-      b.squashed = false;
-      b.hold = false;
-      b.btn.hidden = false;
-      b.btn.classList.remove('squashed');
-      b.btn.setAttribute('aria-label', 'Squash bug');
-      b.btn.removeAttribute('tabindex');
-      spawn(b);
-      placeBug(b);
-    });
-    if (hadFocus) bugs[0].btn.focus({ preventScroll: true });
-    wake();
-  });
 
   /* ---------- State ---------- */
   const pointer = { x: 0, y: 0, in: false };

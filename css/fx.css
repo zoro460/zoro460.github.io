@@ -55,14 +55,7 @@
 .fx-counter { position: absolute; z-index: 2; margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-3); white-space: nowrap; }
 .fx-counter.fx-center { transform: translateX(-50%); }
 .fx-counter.done { color: var(--pass); }
-.fx-counter { display: flex; align-items: center; gap: 4px; }
-.fx-replay {
-  min-height: 44px; padding: 0 10px; border: 0; background: transparent; cursor: pointer;
-  font: inherit; color: var(--cyan); white-space: nowrap;
-}
-.fx-replay[hidden] { display: none; }
-.fx-replay:hover { text-decoration: underline; text-underline-offset: 3px; }
-.fx-replay:focus-visible { outline: 2px solid var(--cyan); outline-offset: -8px; border-radius: 8px; }
+.fx-counter:focus { outline: none; }
 
 /* ---------- 4. Contact: moving aurora border ---------- */
 .fx-ready .contact-card { isolation: isolate; border-color: transparent; }
